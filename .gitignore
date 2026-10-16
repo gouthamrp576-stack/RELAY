@@ -1,0 +1,29 @@
+
+.env
+.env.*
+!.env.example
+
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+# IDE settings
+.spyproject/
+.spyderproject/
+.spyderworkspace/
+.idea/
+.vscode/
+# Frontend generated files
+node_modules/
+dist/
+# Logs and database backups
+*.log
+*.dump
+*.backup
+# Windows files
+Thumbs.db
+Desktop.ini
