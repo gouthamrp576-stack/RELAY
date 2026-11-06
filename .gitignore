@@ -27,3 +27,4 @@ dist/
 # Windows files
 Thumbs.db
 Desktop.ini
+/OPEN_API_KEY.txt

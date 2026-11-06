@@ -150,3 +150,73 @@ class DonationConfirmationRecord(Base):
         JSONB(none_as_null=True),
         nullable=False,
     )
+    
+    
+class IntakeConversationRecord(Base):
+    """Store conversation history, its preview, and an optional saved draft."""
+
+    __tablename__ = "intake_conversations"
+
+    __table_args__ = (
+        CheckConstraint(
+            "revision >= 0",
+            name="ck_intake_conversations_nonnegative_revision",
+        ),
+        UniqueConstraint(
+            "donation_id",
+            name="uq_intake_conversations_donation_id",
+        ),
+    )
+
+    id: Mapped[UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        primary_key=True,
+        default=uuid4,
+    )
+
+    donor_name: Mapped[str] = mapped_column(
+        String(120),
+        nullable=False,
+    )
+
+    revision: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+        default=0,
+        server_default=text("0"),
+    )
+
+    history: Mapped[list[dict]] = mapped_column(
+        JSONB,
+        nullable=False,
+        default=list,
+        server_default=text("'[]'::jsonb"),
+    )
+
+    latest_result: Mapped[dict | None] = mapped_column(
+        JSONB(none_as_null=True),
+        nullable=True,
+    )
+
+    donation_id: Mapped[UUID | None] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey(
+            "donation_drafts.id",
+            name="fk_intake_conversations_donation_id",
+            ondelete="RESTRICT",
+        ),
+        nullable=True,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
